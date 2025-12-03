@@ -94,3 +94,61 @@ def day_two():
         return invalid_sums
 
     print(part_two(ranges))
+
+
+def day_three():
+    def part_one():
+        joltage = [line.removesuffix("\n") for line in open("2025_ex_day3.txt", "r").readlines()]
+
+        # print(joltage)
+        power = 0
+        for electricity in joltage:
+            # gets the two largest values from electricity
+            val = 0
+            digit = 0
+            for index in range(len(electricity)):
+                
+                if int(electricity[index]) > val and index != len(electricity) - 1:
+                    val = int(electricity[index])
+                    digit = 0  # reset digit when a new val is found
+                
+                elif int(electricity[index]) > digit:
+                    digit = int(electricity[index])
+                    
+            # print(f"val: {val}, digit: {digit}")
+            power += val*10 + digit
+
+        return power
+
+    def part_two():
+        joltage = [line.removesuffix("\n") for line in open("2025_ex_day3.txt", "r")]
+        power_len = 12
+
+        total = 0
+        for electricity in joltage:
+            digits = electricity
+            n = len(digits)
+
+            chosen = []
+            start = 0
+
+            # select power_len digits to form the largest number
+            for pick in range(power_len):
+                # the last searchable position to ensure that it will have enough digits left
+                end = n - (power_len - pick)
+
+                # find the largest digit in digits[start:end+1]
+                max_digit = '0'
+                max_index = start
+                for i in range(start, end + 1):
+                    if digits[i] > max_digit:
+                        max_digit = digits[i]
+                        max_index = i
+
+                chosen.append(max_digit)
+                start = max_index + 1  # next search begins after the chosen digit
+
+            total += int("".join(chosen))
+
+        return total
+
