@@ -152,3 +152,73 @@ def day_three():
 
         return total
 
+
+
+def day_four():
+    def part_one():
+        rolls = [line.removesuffix("\n") for line in open("2025_ex_day4.txt", "r").readlines()]
+        accessable = 0
+
+        for line_index in range(len(rolls)):
+            for char_index in range(len(rolls[line_index])):
+                if rolls[line_index][char_index] != "@":
+                    continue
+                
+                count = 0
+                for x in [-1, 0, 1]:
+                    for y in [-1, 0, 1]:
+                        # same element
+                        if x == 0 and y == 0:
+                            continue
+                        new_x = char_index + x
+                        new_y = line_index + y
+                        # validity check for out of bounds
+                        if 0 <= new_x < len(rolls[line_index]) and 0 <= new_y < len(rolls):
+                            if rolls[new_y][new_x] == "@":
+                                count += 1
+
+                if count < 4:
+                    accessable += 1
+
+        print(accessable)
+
+    def part_two():
+        rolls = [line.removesuffix("\n") for line in open("2025_ex_day4.txt", "r").readlines()]
+        accessable = True
+        total = 0
+        while accessable:
+            removed = []
+
+            for line_index in range(len(rolls)):
+                for char_index in range(len(rolls[line_index])):
+                    if rolls[line_index][char_index] != "@":
+                        continue
+                    
+                    count = 0
+                    for x in [-1, 0, 1]:
+                        for y in [-1, 0, 1]:
+                            # same element
+                            if x == 0 and y == 0:
+                                continue
+                            new_x = char_index + x
+                            new_y = line_index + y
+                            # validity check for out of bounds
+                            if 0 <= new_x < len(rolls[line_index]) and 0 <= new_y < len(rolls):
+                                if rolls[new_y][new_x] == "@":
+                                    count += 1
+
+                    if count < 4:
+                        removed.append((line_index, char_index))
+
+            if removed == []:
+                accessable = False
+            else:
+                total += len(removed)
+                for coord in removed:
+                    line_index, char_index = coord
+                    rolls[line_index] = rolls[line_index][:char_index] + "." + rolls[line_index][char_index+1:]
+
+        print(total)
+    part_two()
+
+day_four()
