@@ -221,4 +221,68 @@ def day_four():
         print(total)
     part_two()
 
-day_four()
+
+
+
+def day_five():
+    def part_one():
+        available = []
+        ingredients = []
+        swap = False
+        for line in open("2025_ex_day5.txt", "r").readlines():
+            line = line.removesuffix("\n")
+            if line == "":
+                swap = True
+                continue
+            if not swap:
+                available.append(line)
+            else:
+                ingredients.append(line)
+
+
+        fresh = 0
+
+        for item_id in ingredients:
+            for touple in available:
+                lower, upper = touple.split("-")
+                # print(f"checking {item_id} against range {lower}-{upper}")
+                if int(lower) <= int(item_id) <= int(upper):
+                    # print(f"{item_id} is fresh")
+                    fresh += 1
+                    break
+
+        return fresh
+
+
+    def part_two():
+        ingredient_ranges = []
+
+        for line in open("2025_ex_day5.txt", "r").readlines():
+            line = line.removesuffix("\n")
+            if line == "":
+                break
+            lower, upper = map(int, line.split("-"))
+            ingredient_ranges.append((lower, upper))
+
+        ingredient_ranges.sort()
+
+        merged = []
+        current_lo, current_hi = ingredient_ranges[0]
+
+        for lo, hi in ingredient_ranges[1:]:
+            # overlaping -> extend the current range
+            if lo <= current_hi + 1:
+                current_hi = max(current_hi, hi)
+            else:
+                # no overlap -> push current and start a new one
+                merged.append((current_lo, current_hi))
+                current_lo, current_hi = lo, hi
+
+        merged.append((current_lo, current_hi))
+
+        total = sum(hi - lo + 1 for lo, hi in merged)
+        return total
+
+    print(part_two())
+
+day_five()
