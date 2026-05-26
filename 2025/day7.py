@@ -23,10 +23,30 @@ def part_one(lines):
 
 
 def part_two(lines):
-    # count all possible paths a beam can take
-    path_count = 0
-    
-    pass
+    # dynamic-programming pass row-by-row, tracking how many beams occupy each column
+    start_row, start_col = next(
+        (row_idx, line.index("S")) for row_idx, line in enumerate(lines) if "S" in line
+    )
+
+    column_counts = {start_col: 1}
+
+    for row_idx in range(start_row + 1, len(lines)):
+        line = lines[row_idx]
+        next_counts = {}
+
+        for col, count in column_counts.items():
+            char = line[col] if 0 <= col < len(line) else "."
+            if char == "^":
+                # split left and right if still inside the grid
+                for new_col in (col - 1, col + 1):
+                    if 0 <= new_col < len(line):
+                        next_counts[new_col] = next_counts.get(new_col, 0) + count
+            else:
+                next_counts[col] = next_counts.get(col, 0) + count
+
+        column_counts = next_counts
+
+    return sum(column_counts.values())
 
 
 def parse_input(filepath):
